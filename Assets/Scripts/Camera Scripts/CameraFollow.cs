@@ -25,6 +25,8 @@ public class CameraFollow : MonoBehaviour {
 	void Start () {
 		
 		//Assign the player gameobject to the transform target here.
+		// FIX: target was never assigned (null ref). Find player by "Player" tag; stays private, no [SerializeField]
+		target = GameObject.FindGameObjectWithTag ("Player").transform;
 		
 		offsetZ = (transform.position - target.position).z;
 		followsPlayer = true;
