@@ -1,46 +1,32 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class PlayerDamage : MonoBehaviour {
 
-	private Text lifeText;
-	private int lifeScoreCount;
-
-	private bool canDamage;
+	private bool canDamage;     // i-frame guard so a single enemy hit costs only one life
 
 	void Awake () {
-		lifeText = GameObject.Find ("LifeText").GetComponent<Text> ();
-		lifeScoreCount = 3;
-		lifeText.text = "x" + lifeScoreCount;
-
 		canDamage = true;
 	}
 
 	void Start() {
-		Time.timeScale = 1f;
+		Time.timeScale = 1f;    // make sure time is running (in case it was paused before a reload)
 	}
-	
+
+	// Called by the enemy scripts when they touch the player.
 	public void DealDamage() {
 		if (canDamage) {
-			
-			lifeScoreCount--;
-
-			if (lifeScoreCount >= 0) {
-				lifeText.text = "x" + lifeScoreCount;
-			}
-
-			if (lifeScoreCount == 0) {
-				// RESTART THE GAME
-				Time.timeScale = 0f;
-				StartCoroutine(RestartGame());
-			}
-
 			canDamage = false;
-
+			GameManager.instance.LoseLife (false);   // FEATURE: life is owned by GameManager now (enemy hit, no respawn)
 			StartCoroutine (WaitForDamage ());
+		}
+	}
+
+	// FEATURE: water tiles are tagged "Water" -> tell the GameManager to respawn the player (or end the game).
+	void OnTriggerEnter2D(Collider2D other) {
+		if (other.CompareTag ("Water")) {
+			GameManager.instance.PlayerDrowned ();
 		}
 	}
 
@@ -49,50 +35,4 @@ public class PlayerDamage : MonoBehaviour {
 		canDamage = true;
 	}
 
-	IEnumerator RestartGame() {
-		yield return new WaitForSecondsRealtime(2f);
-		SceneManager.LoadScene ("Gameplay");
-	}
-
 } // class
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
