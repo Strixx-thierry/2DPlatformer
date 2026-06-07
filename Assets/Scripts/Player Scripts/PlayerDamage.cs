@@ -19,10 +19,6 @@ public class PlayerDamage : MonoBehaviour {
 		canDamage = true;
 	}
 
-	void Start() {
-		Time.timeScale = 1f;
-	}
-
 	public void DealDamage() {
 		if (canDamage) {
 
@@ -33,9 +29,8 @@ public class PlayerDamage : MonoBehaviour {
 			}
 
 			if (lifeScoreCount == 0) {
-				// RESTART THE GAME
-				Time.timeScale = 0f;
-				StartCoroutine(RestartGame());
+				// FEATURE: out of lives -> load the End (Game Over) scene
+				SceneManager.LoadScene ("EndScene");
 			}
 
 			canDamage = false;
@@ -47,11 +42,6 @@ public class PlayerDamage : MonoBehaviour {
 	IEnumerator WaitForDamage() {
 		yield return new WaitForSeconds (2f);
 		canDamage = true;
-	}
-
-	IEnumerator RestartGame() {
-		yield return new WaitForSecondsRealtime(2f);
-		SceneManager.LoadScene ("GameScene-ALU"); // FIX: was "Gameplay" (no such scene). Real scene = GameScene-ALU
 	}
 
 } // class

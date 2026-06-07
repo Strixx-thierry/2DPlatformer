@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BossHealth : MonoBehaviour {
 
@@ -18,6 +19,12 @@ public class BossHealth : MonoBehaviour {
 		yield return new WaitForSeconds (2f);
 		canDamage = true;
 	}
+
+	// FEATURE: short pause so the BossDead animation plays, then load the Win scene.
+	IEnumerator ShowWin() {
+		yield return new WaitForSecondsRealtime (1.5f);
+		SceneManager.LoadScene ("Winscene");
+	}
 	
 	void OnTriggerEnter2D(Collider2D target) {
 		if (canDamage) {
@@ -29,6 +36,7 @@ public class BossHealth : MonoBehaviour {
 					//
 					GetComponent<BossScript>().DeactivateBossScript();
 					anim.Play("BossDead");
+					StartCoroutine (ShowWin ()); // FEATURE: boss defeated -> show the Win screen
 				}
 
 				StartCoroutine (WaitForDamage ());
